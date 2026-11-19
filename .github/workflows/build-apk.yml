@@ -7,7 +7,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: write   # нужно, чтобы выкладывать APK в Releases
+  contents: write
 
 jobs:
   apk:
@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
 
       - uses: android-actions/setup-android@v3
         with:
@@ -28,8 +28,6 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      # Необязательно: подпись вашим ключом (см. README). Без ключа APK подписывается
-      # отладочным ключом: он устанавливается, но обновить поверх старой версии нельзя.
       - name: Подпись (если заданы секреты)
         env:
           KS_B64: ${{ secrets.KEYSTORE_BASE64 }}
@@ -60,7 +58,7 @@ jobs:
             -PVERSION_NAME="1.0.${{ github.run_number }}"
           mv app/build/outputs/apk/release/*.apk MiniGram.apk
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4.4.3
         with:
           name: MiniGram-apk
           path: MiniGram.apk
