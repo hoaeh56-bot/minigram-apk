@@ -1,16 +1,42 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
+plugins {
+    id 'com.android.application'
+}
+
+def serverUrl   = (project.findProperty('SERVER_URL') ?: '').toString().trim()
+def verName     = (project.findProperty('VERSION_NAME') ?: '1.0.0').toString()
+def verCode     = (project.findProperty('VERSION_CODE') ?: '1').toString().toInteger()
+
+android {
+    namespace 'ru.minigram.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'ru.minigram.app'
+        minSdk 24
+        targetSdk 34
+        versionCode verCode
+        versionName verName
+        buildConfigField 'String', 'SERVER_URL', '"' + serverUrl.replace('"', '') + '"'
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.5.2'
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            // Подпись отладочным ключом по умолчанию, чтобы не падало
+            signingConfig signingConfigs.debug 
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
 }
